@@ -1,15 +1,34 @@
+<style type="text/css">
+	.testClass{
+		font-size: 18px;
+		color: red;
+	}
+</style>
 <html>
-	<body>
+<body>
 		<script  src="https://code.jquery.com/jquery-2.2.4.js"></script>
 		<script type="text/javascript" src="../newjs.js"></script>
 		<script type="text/javascript">
 			
 		</script>
-		<newjs nj-url = "https://jsonplaceholder.typicode.com/posts/1" nj-method="GET" nj-object="obj"></newjs>
+		<newjs url = "https://jsonplaceholder.typicode.com/posts/1" method="GET" object="obj"></newjs>
+		<newjs url = "https://jsonplaceholder.typicode.com/posts" method="GET" object="list"></newjs>
 		<div>
-			<span nj-text="${obj.title}">
+			<span class="test" nj-text="obj.id==null?'test' : ('append' + obj.body)">
 				
 			</span>
+			<div>
+				<span nj-text="obj.id"></span>
+			</div>
+			<div>
+				<span nj-if="obj.id==1">yes</span>
+			</div>
+			<div>
+				<span nj-class="obj.id==1?'testClass':''">test de class on newJs</span>
+			</div>
+			<select>
+				<option nj-each="abc : list"  nj-text="abc.id" nj-if="abc.id>50"  >test</option>
+			</select>
 		</div>
 	</body>
 </html>
