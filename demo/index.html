@@ -1,11 +1,16 @@
 <style type="text/css">
-	.testClass{
+	.redClass{
 		font-size: 18px;
 		color: red;
+	}
+	.blueClass{
+		font-size: 18px;
+		color: blue;
 	}
 </style>
 <html>
 <body>
+
 		<script  src="https://code.jquery.com/jquery-2.2.4.js"></script>
 		<script type="text/javascript" src="../newjs.js"></script>
 		<script type="text/javascript">
@@ -13,6 +18,10 @@
 		</script>
 		<newjs url = "https://jsonplaceholder.typicode.com/posts/1" method="GET" object="obj"></newjs>
 		<newjs url = "https://jsonplaceholder.typicode.com/posts" method="GET" object="list"></newjs>
+		<newjs url = "https://jsonplaceholder.typicode.com/users" method="GET" object="users"></newjs>
+		<div nj-include="fragment.html:header">
+			
+		</div>
 		<div>
 			<span class="test" nj-text="obj.id==null?'test' : ('append' + obj.body)">
 				
@@ -24,11 +33,21 @@
 				<span nj-if="obj.id==1">yes</span>
 			</div>
 			<div>
-				<span nj-class="obj.id==1?'testClass':''">test de class on newJs</span>
+				<input nj-value="obj.title" nj-attr="name:obj.id"></input>
+			</div>
+			<div>
+				<span nj-class="obj.id==2?'redClass':'blueClass'">test de class on newJs</span>
 			</div>
 			<select>
 				<option nj-each="abc : list"  nj-text="abc.id" nj-if="abc.id>50"  >test</option>
 			</select>
+			<div nj-each="user : users">
+				<span><b >Nom : </b><span nj-text="user.username"></span></span>
+				<span><b >Address : </b><span nj-text="user.address.street"></span></span>
+			</div>
+		</div>
+		<div nj-include="fragment.html:footer">
+			
 		</div>
 	</body>
 </html>

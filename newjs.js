@@ -33,6 +33,7 @@ $(function(){
 
 		
 	});
+
 	$(":attrStartsWith('nj-')").each(function() {
 		var $element = $(this);
 		$.each(this.attributes, function() {
@@ -45,81 +46,112 @@ $(function(){
 	  });
 	});
 });
-function evaluateExpression(element,attribute, expression){
-	switch (attribute) {
+function evaluateExpression(__element,__attribute, __expression){
+	
+	switch (__attribute) {
 		case "nj-text":
-			evaluateText(element, expression);
+			evaluateText(__element, __expression);
 			break;
 		case "nj-if":
-			evaluateIf(element, expression);
+			evaluateIf(__element, __expression);
 			break;
 		case "nj-class":
-			evaluateClass(element, expression);
+			evaluateClass(__element, __expression);
 			break;
 		case "nj-each":
-			evaluateEach(element,expression);
+			evaluateEach(__element,__expression);
+			break;
+		case "nj-value":
+			evaluateValue(__element,__expression);
+			break;
+		case "nj-attr":
+			evaluateAttr(__element,__expression);
+			break;
+		case "nj-include":
+			evaluateInclude(__element,__expression);
 			break;
 
 	}
-}
-function evaluateText(element,expression){
-	var text ;
-	try{
-		text = eval(expression);
-		element.text(text);
-	}
-	catch(e){
-		alert("Error occured");
-	}
+
 	
 }
-function evaluateIf(element,expression){
-	try{
-		var result = eval(expression);
-		if(!result){
-			element.remove();
-		}
-	}
-	catch(e){
-		alert("Error occured");
-	}
-
-}
-function evaluateClass(element,expression){
-	try{
-		var result = eval(expression);
-		element.attr("class",result);
-	}
-	catch(e){
-		alert("Error occured");
-	}
-
-}
-function evaluateEach(__element, expression){
-	var variable = expression.split(":")[0].trim();
-	var listName = expression.split(":")[1].trim();
-	var __list = eval(listName);
-	var $__parent = __element.parent();
-	$__parent.html("");
-	__element.removeAttr("nj-each");
-	for(var i=0; i<__list.length;i++){
-		$__newElement = __element.clone();
-		eval("window."+variable+"=__list["+i+"]");
-		$__parent.append($__newElement);
-		$__newElement.each(function() {
+function evaluateElement(__element){
+	__element.each(function() {
 		$.each(this.attributes, function() {
 	  	if(this.specified) {
 	    	if(this.name.match("^nj-")){
-	    		evaluateExpression($__newElement, this.name, this.value);
+	    		evaluateExpression(__element, this.name, this.value);
 	   					
 	    	}
 	    }
 	  });
 	});
+	__element.children().each(function() {
+		evaluateElement($(this));
+	});
+}
+//This function try to evaluate the expression and give the result
+function getResultFromExpression(__expression){
+	var result ;
+	try{
+		result = eval(__expression);
+		return result;
+	}
+	catch(e){
+		alert("Error occured");
+	}
+
+}
+
+function evaluateText(__element,__expression){
+	var text = getResultFromExpression(__expression);
+	__element.text(text);
+	
+}
+function evaluateIf(__element,__expression){
+	var result = getResultFromExpression(__expression);
+	if(!result){
+		__element.remove();
+	}
+
+}
+function evaluateClass(__element,__expression){
+	var result =  getResultFromExpression(__expression);
+	__element.attr("class",result);
+
+}
+function evaluateValue(__element,__expression){
+	var result =  getResultFromExpression(__expression);
+	__element.val(result);
+}
+function evaluateAttr(__element,__expression){
+	var __attrName = __expression.split(":")[0].trim();
+	var __attrValue = __expression.split(":")[1].trim();
+	var result = getResultFromExpression(__attrValue);
+	__element.attr(__attrName,result);
+}
+function evaluateInclude(__element,__expression){
+	var __page = __expression.split(":")[0].trim();
+	var __fragment = __expression.split(":")[1].trim();
+	__element.load(__page + " [nj-fragment='"+__fragment+"']")
+	
+}
+function evaluateEach(__argElement, __expression){
+	var __variable = __expression.split(":")[0].trim();
+	var __listName = __expression.split(":")[1].trim();
+	var __list = getResultFromExpression(__listName);
+	var $__parent = __argElement.parent();
+	var __element = __argElement;
+	__argElement.remove();
+	__element.removeAttr("nj-each");
+	for(var i=0; i<__list.length;i++){
+		$__newElement = __element.clone();
+		eval("window."+__variable+"=__list["+i+"]");
+		$__parent.append($__newElement);
+		evaluateElement($__newElement);
+
 		
 		
 	}
-	//alert(listName);
-	//alert(eval(variable));
 
 }
