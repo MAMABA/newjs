@@ -16,9 +16,11 @@
 		<script type="text/javascript">
 			
 		</script>
-		<newjs url = "https://jsonplaceholder.typicode.com/posts/1" method="GET" object="obj"></newjs>
-		<newjs url = "https://jsonplaceholder.typicode.com/posts" method="GET" object="list"></newjs>
-		<newjs url = "https://jsonplaceholder.typicode.com/users" method="GET" object="users"></newjs>
+		<nj-config url="../config.conf"></nj-config>
+		<nj-object url = "https://jsonplaceholder.typicode.com/posts/1" method="GET" object="obj"></nj-object>
+		<nj-object url = "https://jsonplaceholder.typicode.com/posts" method="GET" object="list"></nj-object>
+		<nj-object url = "https://jsonplaceholder.typicode.com/users" method="GET" object="users"></nj-object>
+
 		<div nj-include="fragment.html:header">
 			
 		</div>
@@ -31,6 +33,9 @@
 			</div>
 			<div>
 				<span nj-if="obj.id==1">yes</span>
+			</div>
+			<div>
+				<input nj-value="'test'" nj-name="firstName"></input>
 			</div>
 			<div>
 				<input nj-value="obj.title" nj-attr="name:obj.id"></input>
@@ -49,5 +54,6 @@
 		<div nj-include="fragment.html:footer">
 			
 		</div>
+		<a nj-href="'https://google.fr?q='+obj.title" nj-text="'aller sur '+(obj.id==1?'google':'bing')"></a>
 	</body>
 </html>

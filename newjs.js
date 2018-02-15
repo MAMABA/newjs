@@ -10,10 +10,30 @@ jQuery.extend(jQuery.expr[':'], {
     }
 });
 $(function(){
+	//$.ajaxSetup({async: false});
 	
-	$.ajaxSetup({async: false});
-	var vars = {};
-	$("newjs").each(function(){
+	var config = {
+
+	};
+
+	if($("nj-config") != undefined){
+		var configFile = $("nj-config").attr("url");
+		if(configFile != undefined){
+			$.ajax({
+					url: configFile,
+					dataType: "json",
+					async: false,
+					success:function(data){
+						$.each(data, function( key, val ) {
+						 	config[""+key] = val;
+						 })
+					}
+	  		  });
+		}	
+	}
+	
+	
+	$("nj-object").each(function(){
 		var url = $(this).attr("url");
 		var method = $(this).attr("method");
 		var object = $(this).attr("object");
@@ -21,11 +41,9 @@ $(function(){
 		$.ajax({
 				url: url,
  				method : method,
+				async: false,
 				success:function(response){
-					//We add result to the vars array
-					//var r =response;
-					eval("window."+object+"=response");
-					//For each element having 
+					eval("window."+object+"=response"); 
 					
 				}
   		  });
@@ -70,6 +88,19 @@ function evaluateExpression(__element,__attribute, __expression){
 		case "nj-include":
 			evaluateInclude(__element,__expression);
 			break;
+		case "nj-href":
+			evaluateHref(__element,__expression);
+			break;
+		case "nj-id":
+			evaluateId(__element,__expression);
+			break;
+		case "nj-name":
+			evaluateName(__element,__expression);
+			break;
+		case "nj-placeholder":
+			evaluatePlaceholder(__element,__expression);
+			break;
+
 
 	}
 
@@ -120,6 +151,16 @@ function evaluateClass(__element,__expression){
 	__element.attr("class",result);
 
 }
+function evaluateName(__element,__expression){
+	var result =  getResultFromExpression(__expression);
+	__element.attr("name",result);
+
+}
+function evaluatePlatceholder(__element,__expression){
+	var result =  getResultFromExpression(__expression);
+	__element.attr("placeholder",result);
+
+}
 function evaluateValue(__element,__expression){
 	var result =  getResultFromExpression(__expression);
 	__element.val(result);
@@ -135,6 +176,14 @@ function evaluateInclude(__element,__expression){
 	var __fragment = __expression.split(":")[1].trim();
 	__element.load(__page + " [nj-fragment='"+__fragment+"']")
 	
+}
+function evaluateHref(__element,__expression){
+	var result =  getResultFromExpression(__expression);
+	__element.attr("href",result);
+}
+function evaluateId(__element,__expression){
+	var result =  getResultFromExpression(__expression);
+	__element.attr("id",result);
 }
 function evaluateEach(__argElement, __expression){
 	var __variable = __expression.split(":")[0].trim();
