@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <nj-object url="'https://jsonplaceholder.typicode.com/posts'" method="GET" object="posts"></nj-object>
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        
+        <div nj-include="header.html:navbar-right"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Plain Page</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Liste des postes</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" style="max-height: 300px; overflow-y: scroll;">
+                      <ul>
+                        <li nj-each="post:posts"><a nj-text="post.title" href="#" nj-reload-on="click" nj-reload-id="'postDetail'" nj-reload-url="'https://jsonplaceholder.typicode.com/posts/'+post.id" nj-reload-object="detail">test</a></li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Détails</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <nj-object value="posts[0]" object="detail"></nj-object>
+                      <div id="postDetail">
+                        <div>
+                          <b>Id : </b>
+                          <span nj-text="detail.id"></span>
+                        </div>
+                        <div>
+                          <b>Title : </b>
+                          <span nj-text="detail.title"></span>
+                        </div>
+                        <div>
+                          <b>Body : </b>
+                          <span nj-text="detail.body"></span>
+                        </div>
+                      </div>
+                      
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Liste des postes</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" style="max-height: 300px; overflow-y: scroll;">
+                      <select class="form-control" nj-reload-on="change" nj-reload-id="'postDetail2'" nj-reload-object="detail">
+                        <option nj-each="post2:posts" nj-text="post2.title"  nj-reload-url="'https://jsonplaceholder.typicode.com/posts/'+post2.id" ></option>
+                      </select>
+                      
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Détails</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <nj-object value="posts[0]" object="detail2"></nj-object>
+                      <div id="postDetail2">
+                        <div>
+                          <b>Id : </b>
+                          <span nj-text="detail.id"></span>
+                        </div>
+                        <div>
+                          <b>Title : </b>
+                          <span nj-text="detail.title"></span>
+                        </div>
+                        <div>
+                          <b>Body : </b>
+                          <span nj-text="detail.body"></span>
+                        </div>
+                      </div>
+                      
+
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Liste des postes</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" style="max-height: 300px; overflow-y: scroll;">
+                      <select class="form-control" nj-reload-on="change" nj-reload-id="'postDetail3'" nj-reload-fragment="index.html:select-comment" nj-reload-object="comments">
+                        <option nj-each="post3:posts" nj-text="post3.title"  nj-reload-url="'https://jsonplaceholder.typicode.com/posts/'+post3.id+'/comments'" ></option>
+                      </select>
+                      
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Détails</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <nj-object url="'https://jsonplaceholder.typicode.com/posts/'+posts[0].id+'/comments'" method="GET"  object="comments"></nj-object>
+                      <div id="postDetail3">
+                        <select nj-include="index.html:select-comment"></select>
+                        
+                      </div>
+                      
+
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+	   <script src="newjs.js"></script>
+	
+    <!-- Bootstrap -->
+    <nj-script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></nj-script>
+    <!-- FastClick -->
+    <nj-script src="../vendors/fastclick/lib/fastclick.js"></nj-script>
+    <!-- NProgress -->
+    <nj-script src="../vendors/nprogress/nprogress.js"></nj-script>
+    
+    <!-- Custom Theme Scripts -->
+    <nj-script src="../build/js/custom.js"></nj-script>
+  <select class="form-control" nj-fragment="select-comment">
+    <option nj-each="comment:comments" nj-text="comment.name" ></option>
+  </select>
+  </body>
+</html>

@@ -10,7 +10,7 @@ jQuery.extend(jQuery.expr[':'], {
     }
 });
 $(function(){
-	//$.ajaxSetup({async: false});
+	$.ajaxSetup({async: false});
 	
 	var config = {
 
@@ -34,12 +34,17 @@ $(function(){
 	
 	
 	$("nj-object").each(function(){
+
 		var url = $(this).attr("url");
 		var method = $(this).attr("method");
 		var object = $(this).attr("object");
-		
-		$.ajax({
-				url: url,
+		var value = $(this).attr("value");
+		if(value != undefined){
+			getResultFromExpression("window."+object+"="+value);
+		}
+		else{
+			$.ajax({
+				url: getResultFromExpression(url),
  				method : method,
 				async: false,
 				success:function(response){
@@ -47,6 +52,8 @@ $(function(){
 					
 				}
   		  });
+		}
+		
 		
 
 		
@@ -63,6 +70,10 @@ $(function(){
 	    }
 	  });
 	});
+
+	$("nj-script").each(function(){
+		$.getScript( $(this).attr("src"));
+	})
 });
 function evaluateExpression(__element,__attribute, __expression){
 	
@@ -100,7 +111,12 @@ function evaluateExpression(__element,__attribute, __expression){
 		case "nj-placeholder":
 			evaluatePlaceholder(__element,__expression);
 			break;
-
+		case "nj-reload-on":
+			evaluateReload(__element,__expression);
+			break;
+		case "nj-reload-url":
+			evaluateReloadUrl(__element,__expression);
+			break;
 
 	}
 
@@ -174,8 +190,18 @@ function evaluateAttr(__element,__expression){
 function evaluateInclude(__element,__expression){
 	var __page = __expression.split(":")[0].trim();
 	var __fragment = __expression.split(":")[1].trim();
-	__element.load(__page + " [nj-fragment='"+__fragment+"']")
-	
+
+	$.ajax({
+		url:__page,
+		 async: false,
+		  dataType: "html",
+		success:function(result){
+			var fragment = ($("<div></div>").append(result)).find("[nj-fragment='"+__fragment+"']");
+			fragment.removeAttr("nj-fragment");
+			__element.replaceWith(fragment);
+			evaluateElement(fragment);
+		}
+	})
 }
 function evaluateHref(__element,__expression){
 	var result =  getResultFromExpression(__expression);
@@ -203,4 +229,32 @@ function evaluateEach(__argElement, __expression){
 		
 	}
 
+}
+function evaluateReloadUrl(__element,__expression){
+	__element.attr("nj-reload-url", getResultFromExpression(__expression));
+	
+}
+function evaluateReload(__element,__expression){
+	var event = __element.attr("nj-reload-on");
+	var fragment = __element.attr("nj-reload-fragment");
+	__element.on(event,function(){
+		var __elementToReload = $("#"+getResultFromExpression(__element.attr("nj-reload-id")));
+		
+		var objectName = __element.attr("nj-reload-object");
+		$.ajax({
+		url:__element.is("select")?__element.find("option:selected").attr("nj-reload-url"):__element.attr("nj-reload-url"),
+		 async: false,
+		success:function(response){
+			eval("window."+objectName+"=response");
+			if(fragment == undefined){
+				evaluateElement(__elementToReload);
+			}
+			else{
+				__elementToReload.html("<div nj-include='"+fragment+"'></div>")	
+				evaluateElement(__elementToReload);	
+			}
+		}
+	})
+	})
+	
 }
